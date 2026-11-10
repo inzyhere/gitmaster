@@ -6,6 +6,10 @@ GitHub Finder & Social Platform
 
 Gitmasters is a GitHub-focused platform designed to help developers discover GitHub users, explore profiles, and connect with the developer community.
 
+🔴 Live preview:https://inzyhere.github.io/gitmaster/
+
+Screenshots: 
+
 ✨ Features
 
 - 🔍 Search GitHub users
