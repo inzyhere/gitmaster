@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0B1F44">
+  <title>GitHub Finder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <a class="brand" href="index.html" aria-label="GitHub Finder home">
+        <span class="brand-icon" aria-hidden="true">GH</span>
+        <span class="brand-name">GitHub Finder</span>
+      </a>
+
+      <div class="header-actions">
+        <button class="icon-button" id="openSearch" type="button" aria-label="Search developers">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5"/>
+            <path d="m16 16 5 5"/>
+          </svg>
+        </button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" title="Toggle theme">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="search-modal" id="searchModal" hidden>
+      <section class="search-section" aria-label="Search GitHub username">
+        <form class="search-box" id="searchForm">
+          <input id="searchInput" type="text" placeholder="Search username..." autocomplete="off" aria-label="GitHub username" required>
+          <button id="modalSearchBtn" type="button" aria-label="Search GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5"/>
+              <path d="m16 16 5 5"/>
+            </svg>
+          </button>
+        </form>
+        <p id="errorMessage" class="error-message" hidden>GitHub user not found. Check the username and try again.</p>
+      </section>
+    </div>
+
+    <main class="home-feed">
+        <div class="feed" hidden>
+            
+        
+      <section class="feed-heading">
+        <div>
+          <p class="eyebrow">EXPLORE GITHUB</p>
+          <h1>Discover developers<br>and projects.</h1>
+          <p>Find interesting repositories and people building on GitHub.</p>
+        </div>
+      </section>
+
+      <section class="feed-block" aria-labelledby="trendingHeading">
+        <div class="feed-section-heading">
+          <div>
+            <h2 id="trendingHeading">Trending repositories</h2>
+            <p>Projects worth exploring</p>
+          </div>
+          <span class="section-count">Explore</span>
+        </div>
+        <div class="feed-grid">
+          <article class="feed-card">
+            <div class="feed-card-top">
+              <span class="repo-mark" aria-hidden="true">⌘</span>
+              <span class="feed-tag">Open source</span>
+            </div>
+            <h3>Discover projects</h3>
+            <p>Search GitHub profiles to explore the repositories people are building.</p>
+            <button class="card-link" type="button" data-open-search>Find a developer <span aria-hidden="true">→</span></button>
+          </article>
+          <article class="feed-card">
+            <div class="feed-card-top">
+              <span class="repo-mark" aria-hidden="true">✦</span>
+              <span class="feed-tag">Developers</span>
+            </div>
+            <h3>Explore people</h3>
+            <p>Look up a GitHub username and see their profile, stats, and repositories.</p>
+            <button class="card-link" type="button" data-open-search>Search username <span aria-hidden="true">→</span></button>
+          </article>
+        </div>
+      </section>
+        </div>
+
+      <section class="profile-section" id="userContainer" hidden>
+        <article class="profile-card">
+          <div class="profile-header">
+            <img class="avatar" id="img" src="" alt="GitHub avatar">
+            <div class="profile-info">
+              <h2 id="username"></h2>
+              <p id="name"></p>
+              <p id="bio"></p>
+              <a class="profile-link" id="profileLink" href="https://github.com" target="_blank" rel="noopener noreferrer">View GitHub profile ↗</a>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat"><strong id="followers">0</strong><span>Followers</span></div>
+            <div class="stat"><strong id="following">0</strong><span>Following</span></div>
+            <div class="stat"><strong id="repoCount">0</strong><span>Repositories</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="repositories-section" id="repositoriesSection">
+        <div class="section-heading">
+          <div><h2>Repositories</h2><p>Public projects sorted by stars</p></div>
+          <span class="section-count" id="repoLabel">0</span>
+        </div>
+        <div class="repo-list" id="repoList"></div>
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon" aria-hidden="true">⌕</div>
+          <h2>Search a developer</h2>
+          <p>Enter a GitHub username to view their profile and repositories.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const themeToggle = document.querySelector('#themeToggle');
+    const themeIcon = document.querySelector('#themeIcon');
+    const openSearch = document.querySelector('#openSearch');
+    let searchModal = document.querySelector('#searchModal');
+    const searchInput = document.querySelector('#searchInput');
+
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', dark);
+      themeIcon.textContent = dark ? '☀️' : '🌙';
+      themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    applyTheme(localStorage.getItem('github-finder-theme') || 'light');
+
+    themeToggle.addEventListener('click', () => {
+      const nextTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+      localStorage.setItem('github-finder-theme', nextTheme);
+      applyTheme(nextTheme);
+    });
+
+    function showSearch() {
+      searchModal.hidden = false;
+      searchInput.focus();
+    }
+
+    openSearch.addEventListener('click', showSearch);
+    document.querySelectorAll('[data-open-search]').forEach(button => {
+      button.addEventListener('click', showSearch);
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') searchModal.hidden = true;
+    });
+
+    searchModal.addEventListener('click', event => {
+      if (event.target === searchModal) searchModal.hidden = true;
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
