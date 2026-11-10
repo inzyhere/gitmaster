@@ -8,7 +8,9 @@ Gitmasters is a GitHub-focused platform designed to help developers discover Git
 
 🔴 Live preview:https://inzyhere.github.io/gitmaster/
 
-Screenshots: 
+## Screenshots
+
+<img src="Screenshot_2026-11-10-18-40-44-47_a2cf8efcdd42a8e6f7906303f104fb67.jpg" width="300">
 
 ✨ Features
 
